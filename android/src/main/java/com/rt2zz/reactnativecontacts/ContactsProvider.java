@@ -101,25 +101,6 @@ public class ContactsProvider {
     }
 
     public WritableArray getContacts() {
-        Map<String, Contact> justMe;
-        {
-            Cursor cursor = contentResolver.query(
-                    Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI, ContactsContract.Contacts.Data.CONTENT_DIRECTORY),
-                    JUST_ME_PROJECTION.toArray(new String[JUST_ME_PROJECTION.size()]),
-                    null,
-                    null,
-                    null
-            );
-
-            try {
-                justMe = loadContactsFrom(cursor);
-            } finally {
-                if (cursor != null) {
-                    cursor.close();
-                }
-            }
-        }
-
         Map<String, Contact> everyoneElse;
         {
             Cursor cursor = contentResolver.query(
@@ -140,9 +121,6 @@ public class ContactsProvider {
         }
 
         WritableArray contacts = Arguments.createArray();
-        for (Contact contact : justMe.values()) {
-            contacts.pushMap(contact.toMap());
-        }
         for (Contact contact : everyoneElse.values()) {
             contacts.pushMap(contact.toMap());
         }
